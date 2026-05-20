@@ -1,0 +1,12 @@
+{
+  "name": "@molitor/vue-order",
+  "version": "1.0.0",
+  "description": "Order management admin package",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./index.ts"
+    }
+  }
+}
+
