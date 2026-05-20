@@ -12,6 +12,7 @@ import Label from '@admin/components/ui/Label.vue'
 import Select from '@admin/components/ui/Select.vue'
 import FormButtons from '@admin/components/ui/button/FormButtons.vue'
 import FieldError from '@admin/components/ui/FieldError.vue'
+import { CustomerSelect } from '@customer'
 import { orderService, type OrderFormData, type OrderStatus, type Order } from '../index'
 import { toastService } from '@admin/lib/toastService'
 
@@ -103,13 +104,7 @@ onMounted(() => {
             <div class="grid gap-4 md:grid-cols-2">
               <div class="space-y-2">
                 <Label for="customer_id">Ügyfél *</Label>
-                <Input
-                  id="customer_id"
-                  v-model.number="formData.customer_id"
-                  type="number"
-                  placeholder="Ügyfél ID"
-                  required
-                />
+                <CustomerSelect id="customer_id" v-model="formData.customer_id" />
                 <FieldError v-if="errors.customer_id" :message="errors.customer_id" />
               </div>
 
