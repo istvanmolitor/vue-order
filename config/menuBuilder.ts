@@ -1,5 +1,5 @@
 import { MenuBuilder, type MenuItemConfig } from '@menu/index'
-import { ShoppingCart } from 'lucide-vue-next'
+import { ShoppingCart, BadgeCheck, CreditCard, Truck } from 'lucide-vue-next'
 
 /**
  * Order Menu Builder
@@ -21,9 +21,37 @@ export class OrderMenuBuilder extends MenuBuilder {
       id: 'order-management',
       title: 'Rendelések',
       icon: ShoppingCart,
-      path: '/admin/order',
       order: 40,
-      children: []
+      children: [
+        {
+          id: 'orders',
+          title: 'Rendelések',
+          icon: ShoppingCart,
+          path: '/admin/order',
+          order: 10,
+        },
+        {
+          id: 'order-statuses',
+          title: 'Státuszok',
+          icon: BadgeCheck,
+          path: '/admin/order-status',
+          order: 20,
+        },
+        {
+          id: 'order-payments',
+          title: 'Fizetési módok',
+          icon: CreditCard,
+          path: '/admin/order-payment',
+          order: 30,
+        },
+        {
+          id: 'order-shippings',
+          title: 'Szállítási módok',
+          icon: Truck,
+          path: '/admin/order-shipping',
+          order: 40,
+        }
+      ]
     }
 
     this.addMenuItem(menu, orderSection)
@@ -34,4 +62,3 @@ export class OrderMenuBuilder extends MenuBuilder {
 
 // Export singleton instance
 export const orderMenuBuilder = new OrderMenuBuilder()
-
