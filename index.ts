@@ -20,3 +20,4 @@ export { default as router } from './router/index'
 
 // Menu configuration
 export { OrderMenuBuilder, orderMenuBuilder } from './config/menuBuilder'
+export { OrderDashboardBuilder, orderDashboardBuilder } from './config/dashboardBuilder'
