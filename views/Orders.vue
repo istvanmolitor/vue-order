@@ -7,6 +7,7 @@ import CardHeader from '@admin/components/ui/CardHeader.vue'
 import CardTitle from '@admin/components/ui/CardTitle.vue'
 import CardContent from '@admin/components/ui/CardContent.vue'
 import Button from '@admin/components/ui/button/Button.vue'
+import ShowButton from '@admin/components/ui/button/ShowButton.vue'
 import DataTable from '@admin/components/ui/dataTable/DataTable.vue'
 import DataTablePagination from '@admin/components/ui/dataTable/DataTablePagination.vue'
 import DataTableSearch from '@admin/components/ui/dataTable/DataTableSearch.vue'
@@ -154,6 +155,7 @@ onMounted(() => {
           >
             <template #cell-actions="{ row }">
               <div class="flex gap-2">
+                <ShowButton @click="router.push({ name: 'order.show', params: { id: row.id } })" />
                 <EditButton @click="navigateToEdit(row.id)" />
                 <DeleteButton @click="handleDelete(row.id)" />
               </div>
