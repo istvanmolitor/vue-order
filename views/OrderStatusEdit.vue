@@ -12,6 +12,7 @@ import FieldError from '@admin/components/ui/FieldError.vue'
 import Input from '@admin/components/ui/Input.vue'
 import Label from '@admin/components/ui/Label.vue'
 import { toastService } from '@admin/lib/toastService'
+import LoadingSpinner from '@admin/components/ui/LoadingSpinner.vue'
 import { orderStatusService, type OrderStatusFormData } from '../index'
 
 const router = useRouter()
@@ -73,9 +74,7 @@ onMounted(() => {
     <div class="space-y-6">
       <h1 class="text-3xl font-bold tracking-tight">Rendelés státusz szerkesztése</h1>
 
-      <div v-if="fetching" class="py-8 text-center text-muted-foreground">
-        Betöltés...
-      </div>
+      <div v-if="fetching" class="py-8 text-center text-muted-foreground"><LoadingSpinner label="Betöltés..." /></div>
 
       <Card v-else>
         <CardHeader>

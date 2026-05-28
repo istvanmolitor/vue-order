@@ -15,6 +15,7 @@ import FieldError from '@admin/components/ui/FieldError.vue'
 import { CustomerSelect } from '@customer'
 import { orderService, type OrderFormData, type OrderStatus, type Order } from '../index'
 import { toastService } from '@admin/lib/toastService'
+import LoadingSpinner from '@admin/components/ui/LoadingSpinner.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -91,7 +92,7 @@ onMounted(() => {
       </div>
 
       <div v-if="fetching" class="text-center py-8">
-        <p class="text-muted-foreground">Betöltés...</p>
+        <p class="text-muted-foreground"><LoadingSpinner label="Betöltés..." /></p>
       </div>
 
       <Card v-else>

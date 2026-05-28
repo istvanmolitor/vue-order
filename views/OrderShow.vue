@@ -13,6 +13,7 @@ import EditButton from '@admin/components/ui/button/EditButton.vue'
 import DeleteButton from '@admin/components/ui/button/DeleteButton.vue'
 import { orderService, type Order } from '../index'
 import { toastService } from '@admin/lib/toastService'
+import LoadingSpinner from '@admin/components/ui/LoadingSpinner.vue'
 import { ArrowLeft } from 'lucide-vue-next'
 
 const router = useRouter()
@@ -76,7 +77,7 @@ onMounted(() => {
       </div>
 
       <div v-if="loading" class="text-center py-8">
-        <p class="text-muted-foreground">Betöltés...</p>
+        <p class="text-muted-foreground"><LoadingSpinner label="Betöltés..." /></p>
       </div>
 
       <div v-else-if="error" class="text-center py-8">
