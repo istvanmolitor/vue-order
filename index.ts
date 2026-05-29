@@ -7,6 +7,7 @@ export type {
   Order,
   OrderItem,
   OrderStatus,
+  OrderCustomer,
   OrderFormData,
   PaginatedResponse,
   SingleResponse

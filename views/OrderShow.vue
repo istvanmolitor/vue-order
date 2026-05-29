@@ -7,14 +7,12 @@ import CardHeader from '@admin/components/ui/CardHeader.vue'
 import CardTitle from '@admin/components/ui/CardTitle.vue'
 import CardContent from '@admin/components/ui/CardContent.vue'
 import DataCard from '@admin/components/ui/DataCard.vue'
-import Button from '@admin/components/ui/button/Button.vue'
 import BackButton from '@admin/components/ui/button/BackButton.vue'
 import EditButton from '@admin/components/ui/button/EditButton.vue'
 import DeleteButton from '@admin/components/ui/button/DeleteButton.vue'
 import { orderService, type Order } from '../index'
 import { toastService } from '@admin/lib/toastService'
 import LoadingSpinner from '@admin/components/ui/LoadingSpinner.vue'
-import { ArrowLeft } from 'lucide-vue-next'
 
 const router = useRouter()
 const route = useRoute()
@@ -31,7 +29,7 @@ const fetchOrder = async () => {
     order.value = response.data
   } catch (err: any) {
     error.value = err.message || 'Hiba történt az adatok betöltése során'
-    toastService.error(error.value)
+    toastService.error(error.value!)
   } finally {
     loading.value = false
   }
@@ -63,7 +61,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <AdminLayout>
+  <AdminLayout page-title="Rendelés részletek">
     <div class="space-y-6">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
@@ -90,13 +88,19 @@ onMounted(() => {
             label="Rendelés kód"
             :value="order.code"
           />
-          <DataCard
-            label="Ügyfél"
-            :value="(order as any).customer?.name || '-'"
-          />
+          <DataCard label="Ügyfél">
+            <RouterLink
+              v-if="order.customer"
+              :to="{ name: 'customer.customers.edit', params: { id: order.customer.id } }"
+              class="text-sm font-medium text-primary hover:underline"
+            >
+              {{ order.customer.name }}
+            </RouterLink>
+            <p v-else class="text-sm font-medium text-foreground">-</p>
+          </DataCard>
           <DataCard
             label="Státusz"
-            :value="(order as any).orderStatus?.name || '-'"
+            :value="order.orderStatus?.name || '-'"
           />
           <DataCard
             label="Lezárva"
@@ -130,7 +134,7 @@ onMounted(() => {
           </CardContent>
         </Card>
 
-        <Card v-if="(order as any).orderItems && (order as any).orderItems.length > 0">
+        <Card v-if="order.orderItems && order.orderItems.length > 0">
           <CardHeader>
             <CardTitle>Rendelés tételei</CardTitle>
           </CardHeader>
@@ -145,7 +149,7 @@ onMounted(() => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="item in (order as any).orderItems" :key="item.id" class="border-b">
+                  <tr v-for="item in order.orderItems" :key="item.id" class="border-b">
                     <td class="py-2 px-4">{{ item.product_id }}</td>
                     <td class="py-2 px-4">{{ item.quantity }}</td>
                     <td class="text-right py-2 px-4">{{ item.price }}</td>

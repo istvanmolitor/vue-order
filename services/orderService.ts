@@ -2,6 +2,11 @@ import { createApiClient } from '@user/services/apiClient'
 
 const api = createApiClient()
 
+export interface OrderCustomer {
+  id: number
+  name: string
+}
+
 export interface Order {
   id?: number
   code: string
@@ -16,6 +21,9 @@ export interface Order {
   invoice?: boolean
   created_at?: string
   updated_at?: string
+  customer?: OrderCustomer | null
+  orderStatus?: OrderStatus | null
+  orderItems?: OrderItem[]
 }
 
 export interface OrderItem {
@@ -67,7 +75,7 @@ export const orderService = {
     return api.get<PaginatedResponse<Order>>('/api/admin/order/orders', { params })
   },
   getById(id: number | string) {
-    return api.get<SingleResponse<Order>>(`/api/admin/order/orders/${id}`)
+    return api.get<Order>(`/api/admin/order/orders/${id}`)
   },
   getCreateData() {
     return api.get<{ order_statuses: OrderStatus[] }>('/api/admin/order/orders/create')

@@ -30,7 +30,6 @@ const sort = ref('code')
 const direction = ref<'asc' | 'desc'>('desc')
 
 const columns: Column[] = [
-  { key: 'id', label: 'ID', sortable: true, width: '80px' },
   { key: 'code', label: 'Rendelés kód', sortable: true },
   { key: 'customer', label: 'Ügyfél' },
   { key: 'orderStatus', label: 'Státusz' },
