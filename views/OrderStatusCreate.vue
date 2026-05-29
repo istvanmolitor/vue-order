@@ -12,15 +12,19 @@ import ColorPicker from '@admin/components/ui/ColorPicker.vue'
 import FieldError from '@admin/components/ui/FieldError.vue'
 import Input from '@admin/components/ui/Input.vue'
 import Label from '@admin/components/ui/Label.vue'
+import Textarea from '@admin/components/ui/Textarea.vue'
+import TranslationRepeaterVue from '@language/components/TranslationRepeater.vue'
 import { toastService } from '@admin/lib/toastService'
 import { orderStatusService, type OrderStatusFormData } from '../index'
 
+const TranslationRepeater = TranslationRepeaterVue as any
+
 const router = useRouter()
 const loading = ref(false)
-const errors = ref<Record<string, string>>({})
+const errors = ref<Record<string, string | string[]>>({})
 const formData = ref<OrderStatusFormData>({
   code: '',
-  name: '',
+  translations: {},
   color: '',
 })
 
@@ -59,19 +63,39 @@ const handleSubmit = async () => {
             <div class="space-y-2">
               <Label for="code">Kód *</Label>
               <Input id="code" v-model="formData.code" required />
-              <FieldError v-if="errors.code" :message="errors.code" />
+              <FieldError :errors="errors.code" />
             </div>
 
             <div class="space-y-2">
-              <Label for="name">Név *</Label>
-              <Input id="name" v-model="formData.name" required />
-              <FieldError v-if="errors.name" :message="errors.name" />
+              <Label>Fordítások</Label>
+              <TranslationRepeater
+                :model-value="formData.translations as any"
+                :fields="['name', 'description']"
+                @update:model-value="(value: any) => formData.translations = value"
+              >
+                <template #default="{ language, translation }">
+                  <div class="space-y-4">
+                    <div class="space-y-2">
+                      <Label :for="`translation-name-${language.id}`">Név *</Label>
+                      <Input :id="`translation-name-${language.id}`" v-model="translation.name" />
+                      <FieldError :errors="errors[`translations.${language.id}.name`]" />
+                    </div>
+
+                    <div class="space-y-2">
+                      <Label :for="`translation-description-${language.id}`">Leírás</Label>
+                      <Textarea :id="`translation-description-${language.id}`" v-model="translation.description" rows="3" />
+                      <FieldError :errors="errors[`translations.${language.id}.description`]" />
+                    </div>
+                  </div>
+                </template>
+              </TranslationRepeater>
+              <FieldError :errors="errors.translations" />
             </div>
 
             <div class="space-y-2">
               <Label for="color">Szín</Label>
               <ColorPicker id="color" v-model="formData.color" placeholder="#22c55e" />
-              <FieldError v-if="errors.color" :message="errors.color" />
+              <FieldError :errors="errors.color" />
             </div>
 
             <FormButtons

@@ -6,15 +6,22 @@ export interface OrderStatusItem {
   id?: number
   code: string
   name: string
+  description?: string | null
   color?: string | null
+  translations?: Record<number, OrderStatusTranslation>
   created_at?: string
   updated_at?: string
 }
 
+export interface OrderStatusTranslation {
+  name: string
+  description: string
+}
+
 export interface OrderStatusFormData {
   code: string
-  name: string
-  color?: string | null
+  translations: Record<number, OrderStatusTranslation>
+  color?: string
 }
 
 export interface PaginatedResponse<T> {
