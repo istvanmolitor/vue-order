@@ -8,9 +8,7 @@ import CardTitle from '@admin/components/ui/CardTitle.vue'
 import CardContent from '@admin/components/ui/CardContent.vue'
 import Button from '@admin/components/ui/button/Button.vue'
 import ShowButton from '@admin/components/ui/button/ShowButton.vue'
-import DataTable from '@admin/components/ui/dataTable/DataTable.vue'
-import DataTablePagination from '@admin/components/ui/dataTable/DataTablePagination.vue'
-import DataTableSearch from '@admin/components/ui/dataTable/DataTableSearch.vue'
+import DataTable, { type Column, type PaginationMeta } from '@admin/components/ui/dataTable/DataTable.vue'
 import EditButton from '@admin/components/ui/button/EditButton.vue'
 import DeleteButton from '@admin/components/ui/button/DeleteButton.vue'
 import { orderService, type Order } from '../index'
@@ -21,21 +19,23 @@ const router = useRouter()
 const orders = ref<Order[]>([])
 const loading = ref(false)
 const error = ref<string | null>(null)
-const currentPage = ref(1)
-const lastPage = ref(1)
-const total = ref(0)
+const pagination = ref<PaginationMeta>({
+  current_page: 1,
+  last_page: 1,
+  per_page: 10,
+  total: 0,
+})
 const search = ref('')
 const sort = ref('code')
 const direction = ref<'asc' | 'desc'>('desc')
 
-const columns = [
-  { key: 'id', label: 'ID' },
-  { key: 'code', label: 'Rendelés kód' },
+const columns: Column[] = [
+  { key: 'id', label: 'ID', sortable: true, width: '80px' },
+  { key: 'code', label: 'Rendelés kód', sortable: true },
   { key: 'customer', label: 'Ügyfél' },
   { key: 'orderStatus', label: 'Státusz' },
-  { key: 'is_closed', label: 'Lezárva' },
-  { key: 'created_at', label: 'Létrehozva' },
-  { key: 'actions', label: 'Műveletek' },
+  { key: 'is_closed', label: 'Lezárva', sortable: true },
+  { key: 'created_at', label: 'Létrehozva', sortable: true },
 ]
 
 const displayOrders = computed(() => {
@@ -47,48 +47,34 @@ const displayOrders = computed(() => {
   }))
 })
 
-const fetchOrders = async (page = 1) => {
+const fetchOrders = async (params: {
+  search?: string
+  sort?: string
+  direction?: 'asc' | 'desc'
+  page?: number
+} = {}) => {
   loading.value = true
   error.value = null
+
   try {
     const response = await orderService.getAll({
-      page,
-      search: search.value || undefined,
-      sort: sort.value,
-      direction: direction.value,
+      page: params.page,
+      search: params.search !== undefined ? params.search : (search.value || undefined),
+      sort: params.sort ?? sort.value,
+      direction: params.direction ?? direction.value,
     })
 
     orders.value = response.data.data
-    currentPage.value = response.data.meta.current_page
-    lastPage.value = response.data.meta.last_page
-    total.value = response.data.meta.total
+    pagination.value = response.data.meta
+    search.value = params.search ?? search.value
+    sort.value = params.sort ?? sort.value
+    direction.value = params.direction ?? direction.value
   } catch (err: any) {
     error.value = err.message || 'Hiba történt az adatok betöltése során'
     toastService.error(error.value)
   } finally {
     loading.value = false
   }
-}
-
-const handleSearch = () => {
-  currentPage.value = 1
-  fetchOrders()
-}
-
-const handleSort = (column: string) => {
-  if (sort.value === column) {
-    direction.value = direction.value === 'asc' ? 'desc' : 'asc'
-  } else {
-    sort.value = column
-    direction.value = 'asc'
-  }
-  currentPage.value = 1
-  fetchOrders()
-}
-
-const handlePageChange = (page: number) => {
-  currentPage.value = page
-  fetchOrders(page)
 }
 
 const handleDelete = async (id: number | undefined) => {
@@ -98,7 +84,7 @@ const handleDelete = async (id: number | undefined) => {
     try {
       await orderService.delete(id)
       toastService.success('Rendelés sikeresen törölve')
-      fetchOrders(currentPage.value)
+      await fetchOrders({ page: Number(pagination.value.current_page) || 1 })
     } catch (err: any) {
       toastService.error(err.message || 'Hiba történt a törlés során')
     }
@@ -116,7 +102,7 @@ const navigateToEdit = (id: number | undefined) => {
 }
 
 onMounted(() => {
-  fetchOrders()
+  fetchOrders({ page: 1, sort: 'code', direction: 'desc' })
 })
 </script>
 
@@ -136,24 +122,22 @@ onMounted(() => {
           <CardTitle>Rendelések kezelése</CardTitle>
         </CardHeader>
         <CardContent class="space-y-4">
-          <DataTableSearch
-            v-model="search"
-            @search="handleSearch"
-            placeholder="Keressen rendelés kód vagy ügyfél neve alapján..."
-          />
-
           <div v-if="error" class="p-4 bg-red-50 text-red-700 rounded-md text-sm">
             {{ error }}
           </div>
 
           <DataTable
             :columns="columns"
-            :rows="displayOrders"
+            :data="displayOrders"
             :loading="loading"
-            @sort="handleSort"
-            @row-click="(row) => router.push({ name: 'order.show', params: { id: row.id } })"
+            :pagination="pagination"
+            :searchable="true"
+            search-placeholder="Keressen rendelés kód vagy ügyfél neve alapján..."
+            default-sort="code"
+            default-direction="desc"
+            @fetch="fetchOrders"
           >
-            <template #cell-actions="{ row }">
+            <template #row-actions="{ row }">
               <div class="flex gap-2">
                 <ShowButton @click="router.push({ name: 'order.show', params: { id: row.id } })" />
                 <EditButton @click="navigateToEdit(row.id)" />
@@ -161,13 +145,6 @@ onMounted(() => {
               </div>
             </template>
           </DataTable>
-
-          <DataTablePagination
-            :current-page="currentPage"
-            :last-page="lastPage"
-            :total="total"
-            @page-change="handlePageChange"
-          />
         </CardContent>
       </Card>
     </div>
