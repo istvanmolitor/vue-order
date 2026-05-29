@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AdminLayout from '@admin/components/layout/AdminLayout.vue'
 import Card from '@admin/components/ui/Card.vue'
@@ -12,20 +12,37 @@ import ColorPicker from '@admin/components/ui/ColorPicker.vue'
 import FieldError from '@admin/components/ui/FieldError.vue'
 import Input from '@admin/components/ui/Input.vue'
 import Label from '@admin/components/ui/Label.vue'
+import Textarea from '@admin/components/ui/Textarea.vue'
+import { normalizeTranslations } from '@language'
+import TranslationRepeaterVue from '@language/components/TranslationRepeater.vue'
 import { toastService } from '@admin/lib/toastService'
 import LoadingSpinner from '@admin/components/ui/LoadingSpinner.vue'
 import { orderPaymentService, type OrderPaymentFormData } from '../index'
+
+const TranslationRepeater = TranslationRepeaterVue as any
 
 const router = useRouter()
 const route = useRoute()
 const loading = ref(false)
 const fetching = ref(true)
-const errors = ref<Record<string, string>>({})
+const errors = ref<Record<string, string | string[]>>({})
 const formData = ref<OrderPaymentFormData>({
   code: '',
-  name: '',
+  translations: {},
   color: '',
-  price: null,
+  price: undefined,
+})
+
+const priceInput = computed<string | number | undefined>({
+  get: () => formData.value.price,
+  set: (value) => {
+    if (value === '' || value === undefined) {
+      formData.value.price = undefined
+      return
+    }
+
+    formData.value.price = typeof value === 'number' ? value : Number(value)
+  },
 })
 
 const fetchOrderPayment = async () => {
@@ -36,9 +53,9 @@ const fetchOrderPayment = async () => {
 
     formData.value = {
       code: orderPayment.code,
-      name: orderPayment.name,
+      translations: normalizeTranslations(orderPayment.translations, ['name', 'description']) as OrderPaymentFormData['translations'],
       color: orderPayment.color || '',
-      price: orderPayment.price ?? null,
+      price: orderPayment.price ?? undefined,
     }
   } catch (err: any) {
     toastService.error(err.message || 'Hiba történt a fizetési mód betöltése során')
@@ -87,25 +104,45 @@ onMounted(() => {
             <div class="space-y-2">
               <Label for="code">Kód *</Label>
               <Input id="code" v-model="formData.code" required />
-              <FieldError v-if="errors.code" :message="errors.code" />
+              <FieldError :errors="errors.code" />
             </div>
 
             <div class="space-y-2">
-              <Label for="name">Név *</Label>
-              <Input id="name" v-model="formData.name" required />
-              <FieldError v-if="errors.name" :message="errors.name" />
+              <div class="text-sm font-medium leading-none">Fordítások</div>
+              <TranslationRepeater
+                :model-value="formData.translations as any"
+                :fields="['name', 'description']"
+                @update:model-value="(value: any) => formData.translations = value"
+              >
+                <template #default="{ language, translation }">
+                  <div class="space-y-4">
+                    <div class="space-y-2">
+                      <Label :for="`translation-name-${language.id}`">Név *</Label>
+                      <Input :id="`translation-name-${language.id}`" v-model="translation.name" />
+                      <FieldError :errors="errors[`translations.${language.id}.name`]" />
+                    </div>
+
+                    <div class="space-y-2">
+                      <Label :for="`translation-description-${language.id}`">Leírás</Label>
+                      <Textarea :id="`translation-description-${language.id}`" v-model="translation.description" rows="3" />
+                      <FieldError :errors="errors[`translations.${language.id}.description`]" />
+                    </div>
+                  </div>
+                </template>
+              </TranslationRepeater>
+              <FieldError :errors="errors.translations" />
             </div>
 
             <div class="space-y-2">
               <Label for="price">Ár</Label>
-              <Input id="price" v-model.number="formData.price" type="number" min="0" step="0.01" />
-              <FieldError v-if="errors.price" :message="errors.price" />
+              <Input id="price" v-model="priceInput" type="number" min="0" step="0.01" />
+              <FieldError :errors="errors.price" />
             </div>
 
             <div class="space-y-2">
               <Label for="color">Szín</Label>
               <ColorPicker id="color" v-model="formData.color" placeholder="#3b82f6" />
-              <FieldError v-if="errors.color" :message="errors.color" />
+              <FieldError :errors="errors.color" />
             </div>
 
             <FormButtons

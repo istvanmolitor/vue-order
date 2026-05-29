@@ -6,17 +6,24 @@ export interface OrderPayment {
   id?: number
   code: string
   name: string
+  description?: string | null
+  translations?: Record<number, OrderPaymentTranslation>
   color?: string | null
   price?: number | null
   created_at?: string
   updated_at?: string
 }
 
+export interface OrderPaymentTranslation {
+  name: string
+  description: string
+}
+
 export interface OrderPaymentFormData {
   code: string
-  name: string
-  color?: string | null
-  price?: number | null
+  translations: Record<number, OrderPaymentTranslation>
+  color?: string
+  price?: number
 }
 
 export interface PaginatedResponse<T> {

@@ -6,6 +6,8 @@ export interface OrderShipping {
   id?: number
   code: string
   name: string
+  description?: string | null
+  translations?: Record<number, OrderShippingTranslation>
   type?: string | null
   color?: string | null
   price?: number | null
@@ -13,12 +15,17 @@ export interface OrderShipping {
   updated_at?: string
 }
 
+export interface OrderShippingTranslation {
+  name: string
+  description: string
+}
+
 export interface OrderShippingFormData {
   code: string
-  name: string
-  type?: string | null
-  color?: string | null
-  price?: number | null
+  translations: Record<number, OrderShippingTranslation>
+  type?: string
+  color?: string
+  price?: number
 }
 
 export interface PaginatedResponse<T> {
