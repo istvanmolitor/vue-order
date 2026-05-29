@@ -8,6 +8,7 @@ import CardDescription from '@admin/components/ui/CardDescription.vue'
 import CardHeader from '@admin/components/ui/CardHeader.vue'
 import CardTitle from '@admin/components/ui/CardTitle.vue'
 import FormButtons from '@admin/components/ui/button/FormButtons.vue'
+import ColorPicker from '@admin/components/ui/ColorPicker.vue'
 import FieldError from '@admin/components/ui/FieldError.vue'
 import Input from '@admin/components/ui/Input.vue'
 import Label from '@admin/components/ui/Label.vue'
@@ -77,9 +78,7 @@ onMounted(() => {
   <AdminLayout page-title="Szállítási mód szerkesztése">
     <div class="space-y-6">
       <h1 class="text-3xl font-bold tracking-tight">Szállítási mód szerkesztése</h1>
-
       <div v-if="fetching" class="py-8 text-center text-muted-foreground"><LoadingSpinner label="Betöltés..." /></div>
-
       <Card v-else>
         <CardHeader>
           <CardTitle>Szállítási mód adatai</CardTitle>
@@ -113,7 +112,7 @@ onMounted(() => {
 
             <div class="space-y-2">
               <Label for="color">Szín</Label>
-              <Input id="color" v-model="formData.color" placeholder="#f59e0b" />
+              <ColorPicker id="color" v-model="formData.color" placeholder="#f59e0b" />
               <FieldError v-if="errors.color" :message="errors.color" />
             </div>
 
