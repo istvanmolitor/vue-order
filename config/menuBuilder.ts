@@ -22,6 +22,7 @@ export class OrderMenuBuilder extends MenuBuilder {
       title: 'Rendelések',
       icon: ShoppingCart,
       order: 40,
+      permission: 'order',
       children: [
         {
           id: 'orders',
@@ -29,6 +30,7 @@ export class OrderMenuBuilder extends MenuBuilder {
           icon: ShoppingCart,
           path: '/admin/order',
           order: 10,
+          permission: 'order',
         },
         {
           id: 'order-statuses',
@@ -36,6 +38,7 @@ export class OrderMenuBuilder extends MenuBuilder {
           icon: BadgeCheck,
           path: '/admin/order-status',
           order: 20,
+          permission: 'order',
         },
         {
           id: 'order-payments',
@@ -43,6 +46,7 @@ export class OrderMenuBuilder extends MenuBuilder {
           icon: CreditCard,
           path: '/admin/order-payment',
           order: 30,
+          permission: 'order',
         },
         {
           id: 'order-shippings',
@@ -50,6 +54,7 @@ export class OrderMenuBuilder extends MenuBuilder {
           icon: Truck,
           path: '/admin/order-shipping',
           order: 40,
+          permission: 'order',
         }
       ]
     }
