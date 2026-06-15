@@ -143,14 +143,42 @@ onMounted(() => {
               <table class="w-full text-sm">
                 <thead>
                   <tr class="border-b">
-                    <th class="text-left py-2 px-4">Termék ID</th>
+                    <th class="text-left py-2 px-4">Termék</th>
                     <th class="text-left py-2 px-4">Mennyiség</th>
                     <th class="text-right py-2 px-4">Ár</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="item in order.orderItems" :key="item.id" class="border-b">
-                    <td class="py-2 px-4">{{ item.product_id }}</td>
+                    <td class="py-2 px-4">
+                      <RouterLink
+                        v-if="item.product?.id"
+                        :to="`/admin/product/${item.product.id}/edit`"
+                        class="flex items-center gap-3 hover:bg-muted/40 rounded-md p-1 -m-1 transition-colors"
+                      >
+                        <img
+                          v-if="item.product?.image_url"
+                          :src="item.product.image_url"
+                          :alt="item.product?.name || item.product?.sku || 'Termékkép'"
+                          class="w-12 h-12 rounded object-cover border"
+                        />
+                        <div
+                          v-else
+                          class="w-12 h-12 rounded border bg-muted flex items-center justify-center text-[10px] text-muted-foreground"
+                        >
+                          Nincs kép
+                        </div>
+
+                        <div class="min-w-0">
+                          <p class="text-xs text-muted-foreground truncate">{{ item.product?.sku || '-' }}</p>
+                          <p class="font-medium text-sm truncate">{{ item.product?.name || '-' }}</p>
+                        </div>
+                      </RouterLink>
+
+                      <div v-else class="flex items-center gap-2">
+                        <span class="text-muted-foreground">-</span>
+                      </div>
+                    </td>
                     <td class="py-2 px-4">{{ item.quantity }}</td>
                     <td class="text-right py-2 px-4">{{ item.price }}</td>
                   </tr>

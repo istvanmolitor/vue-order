@@ -32,6 +32,12 @@ export interface OrderItem {
   product_id: number
   quantity: number
   price: number
+  product?: {
+    id?: number
+    sku?: string | null
+    name?: string | null
+    image_url?: string | null
+  } | null
   created_at?: string
   updated_at?: string
 }
