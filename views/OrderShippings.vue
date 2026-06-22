@@ -29,7 +29,6 @@ const sort = ref('code')
 const direction = ref<'asc' | 'desc'>('asc')
 
 const columns: Column<OrderShipping>[] = [
-  { key: 'id', label: 'ID', sortable: true, width: '80px' },
   { key: 'code', label: 'Kód', sortable: true },
   { key: 'name', label: 'Név', sortable: true },
   { key: 'type', label: 'Típus', sortable: false, width: '140px' },
