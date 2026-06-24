@@ -11,6 +11,7 @@ import FormButtons from '@admin/components/ui/button/FormButtons.vue'
 import ColorPicker from '@admin/components/ui/ColorPicker.vue'
 import FieldError from '@admin/components/ui/FieldError.vue'
 import Input from '@admin/components/ui/Input.vue'
+import InputField from '@admin/components/ui/InputField.vue'
 import Label from '@admin/components/ui/Label.vue'
 import Textarea from '@admin/components/ui/Textarea.vue'
 import { normalizeTranslations } from '@language'
@@ -101,11 +102,7 @@ onMounted(() => {
         </CardHeader>
         <CardContent>
           <form class="space-y-6" @submit.prevent="handleSubmit">
-            <div class="space-y-2">
-              <Label for="code">Kód *</Label>
-              <Input id="code" v-model="formData.code" required />
-              <FieldError :errors="errors.code" />
-            </div>
+            <InputField id="code" label="Kód" v-model="formData.code" :required="true" :errors="errors.code" />
 
             <div class="space-y-2">
               <div class="text-sm font-medium leading-none">Fordítások</div>

@@ -10,8 +10,9 @@ import CardTitle from '@admin/components/ui/CardTitle.vue'
 import FormButtons from '@admin/components/ui/button/FormButtons.vue'
 import ColorPicker from '@admin/components/ui/ColorPicker.vue'
 import FieldError from '@admin/components/ui/FieldError.vue'
-import Input from '@admin/components/ui/Input.vue'
+import InputField from '@admin/components/ui/InputField.vue'
 import Label from '@admin/components/ui/Label.vue'
+import Input from '@admin/components/ui/Input.vue'
 import Textarea from '@admin/components/ui/Textarea.vue'
 import TranslationRepeaterVue from '@language/components/TranslationRepeater.vue'
 import { toastService } from '@admin/lib/toastService'
@@ -60,11 +61,7 @@ const handleSubmit = async () => {
         </CardHeader>
         <CardContent>
           <form class="space-y-6" @submit.prevent="handleSubmit">
-            <div class="space-y-2">
-              <Label for="code">Kód *</Label>
-              <Input id="code" v-model="formData.code" required />
-              <FieldError :errors="errors.code" />
-            </div>
+            <InputField id="code" label="Kód" v-model="formData.code" :required="true" :errors="errors.code" />
 
             <div class="space-y-2">
               <Label>Fordítások</Label>

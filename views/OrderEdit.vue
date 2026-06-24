@@ -7,7 +7,7 @@ import CardHeader from '@admin/components/ui/CardHeader.vue'
 import CardTitle from '@admin/components/ui/CardTitle.vue'
 import CardContent from '@admin/components/ui/CardContent.vue'
 import CardDescription from '@admin/components/ui/CardDescription.vue'
-import Input from '@admin/components/ui/Input.vue'
+import InputField from '@admin/components/ui/InputField.vue'
 import Label from '@admin/components/ui/Label.vue'
 import Select from '@admin/components/ui/Select.vue'
 import FormButtons from '@admin/components/ui/button/FormButtons.vue'
@@ -128,16 +128,7 @@ onMounted(() => {
                 <FieldError v-if="errors.order_status_id" :message="errors.order_status_id" />
               </div>
 
-              <div class="space-y-2">
-                <Label for="phone">Telefonszám</Label>
-                <Input
-                  id="phone"
-                  v-model="formData.phone"
-                  type="tel"
-                  placeholder="+36 1 234 5678"
-                />
-                <FieldError v-if="errors.phone" :message="errors.phone" />
-              </div>
+              <InputField id="phone" label="Telefonszám" v-model="formData.phone" :type="'tel'" placeholder="+36 1 234 5678" :errors="errors.phone" />
 
               <div class="space-y-2">
                 <Label for="is_closed" class="flex items-center gap-2">

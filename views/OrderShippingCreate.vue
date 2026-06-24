@@ -11,6 +11,7 @@ import FormButtons from '@admin/components/ui/button/FormButtons.vue'
 import ColorPicker from '@admin/components/ui/ColorPicker.vue'
 import FieldError from '@admin/components/ui/FieldError.vue'
 import Input from '@admin/components/ui/Input.vue'
+import InputField from '@admin/components/ui/InputField.vue'
 import Label from '@admin/components/ui/Label.vue'
 import Textarea from '@admin/components/ui/Textarea.vue'
 import TranslationRepeaterVue from '@language/components/TranslationRepeater.vue'
@@ -81,11 +82,7 @@ const handleSubmit = async () => {
         </CardHeader>
         <CardContent>
           <form class="space-y-6" @submit.prevent="handleSubmit">
-            <div class="space-y-2">
-              <Label for="code">Kód *</Label>
-              <Input id="code" v-model="formData.code" required />
-              <FieldError :errors="errors.code" />
-            </div>
+            <InputField id="code" label="Kód" v-model="formData.code" :required="true" :errors="errors.code" />
 
             <div class="space-y-2">
               <Label>Fordítások</Label>
@@ -113,11 +110,7 @@ const handleSubmit = async () => {
               <FieldError :errors="errors.translations" />
             </div>
 
-            <div class="space-y-2">
-              <Label for="type">Típus</Label>
-              <Input id="type" v-model="typeInput" placeholder="simple" />
-              <FieldError :errors="errors.type" />
-            </div>
+            <InputField id="type" label="Típus" v-model="typeInput" placeholder="simple" :errors="errors.type" />
 
             <div class="space-y-2">
               <Label for="price">Ár</Label>
