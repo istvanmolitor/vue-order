@@ -29,13 +29,7 @@ const search = ref('')
 const sort = ref('code')
 const direction = ref<'asc' | 'desc'>('desc')
 
-const columns: Column[] = [
-  { key: 'code', label: 'Rendelés kód', sortable: true },
-  { key: 'customer', label: 'Ügyfél' },
-  { key: 'orderStatus', label: 'Státusz' },
-  { key: 'is_closed', label: 'Lezárva', sortable: true },
-  { key: 'created_at', label: 'Létrehozva', sortable: true },
-]
+const columns = ref<Column[]>([])
 
 const displayOrders = computed(() => {
   return orders.value.map(order => ({
@@ -65,6 +59,7 @@ const fetchOrders = async (params: {
 
     orders.value = response.data.data
     pagination.value = response.data.meta
+    columns.value = (response.data.columns ?? []) as Column[]
     search.value = params.search ?? search.value
     sort.value = params.sort ?? sort.value
     direction.value = params.direction ?? direction.value

@@ -28,12 +28,7 @@ const search = ref('')
 const sort = ref('code')
 const direction = ref<'asc' | 'desc'>('asc')
 
-const columns: Column<OrderPayment>[] = [
-  { key: 'code', label: 'Kód', sortable: true },
-  { key: 'name', label: 'Név', sortable: true },
-  { key: 'price', label: 'Ár', sortable: true, width: '140px' },
-  { key: 'color', label: 'Szín', sortable: false, width: '140px' },
-]
+const columns = ref<Column[]>([])
 
 const fetchOrderPayments = async (params: {
   search?: string
@@ -54,6 +49,7 @@ const fetchOrderPayments = async (params: {
 
     orderPayments.value = response.data.data
     pagination.value = response.data.meta
+    columns.value = (response.data.columns ?? []) as Column[]
     search.value = params.search ?? search.value
     sort.value = params.sort ?? sort.value
     direction.value = params.direction ?? direction.value
