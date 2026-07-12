@@ -12,7 +12,6 @@ import ColorPicker from '@admin/components/ui/ColorPicker.vue'
 import FieldError from '@admin/components/ui/FieldError.vue'
 import InputField from '@admin/components/ui/InputField.vue'
 import Label from '@admin/components/ui/Label.vue'
-import Input from '@admin/components/ui/Input.vue'
 import Textarea from '@admin/components/ui/Textarea.vue'
 import TranslationRepeaterVue from '@language/components/TranslationRepeater.vue'
 import { toastService } from '@admin/lib/toastService'
@@ -71,11 +70,7 @@ const handleSubmit = async () => {
                 @update:model-value="(value: any) => formData.translations = value"
               >
                 <div class="space-y-4">
-                  <div class="space-y-2">
-                    <Label :for="`translation-name-${language.id}`">Név *</Label>
-                    <Input :id="`translation-name-${language.id}`" v-model="translation.name" />
-                    <FieldError :errors="errors[`translations.${language.id}.name`]" />
-                  </div>
+                  <InputField :id="`translation-name-${language.id}`" label="Név *" v-model="translation.name" :errors="errors[`translations.${language.id}.name`]" />
 
                   <div class="space-y-2">
                     <Label :for="`translation-description-${language.id}`">Leírás</Label>

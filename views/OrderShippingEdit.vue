@@ -10,7 +10,6 @@ import CardTitle from '@admin/components/ui/CardTitle.vue'
 import FormButtons from '@admin/components/ui/button/FormButtons.vue'
 import ColorPicker from '@admin/components/ui/ColorPicker.vue'
 import FieldError from '@admin/components/ui/FieldError.vue'
-import Input from '@admin/components/ui/Input.vue'
 import InputField from '@admin/components/ui/InputField.vue'
 import Label from '@admin/components/ui/Label.vue'
 import Textarea from '@admin/components/ui/Textarea.vue'
@@ -121,11 +120,7 @@ onMounted(() => {
                 @update:model-value="(value: any) => formData.translations = value"
               >
                 <div class="space-y-4">
-                  <div class="space-y-2">
-                    <Label :for="`translation-name-${language.id}`">Név *</Label>
-                    <Input :id="`translation-name-${language.id}`" v-model="translation.name" />
-                    <FieldError :errors="errors[`translations.${language.id}.name`]" />
-                  </div>
+                  <InputField :id="`translation-name-${language.id}`" label="Név" v-model="translation.name" :required="true" :errors="errors[`translations.${language.id}.name`]" />
 
                   <div class="space-y-2">
                     <Label :for="`translation-description-${language.id}`">Leírás</Label>
@@ -139,11 +134,7 @@ onMounted(() => {
 
             <InputField id="type" label="Típus" v-model="typeInput" placeholder="simple" :errors="errors.type" />
 
-            <div class="space-y-2">
-              <Label for="price">Ár</Label>
-              <Input id="price" v-model="priceInput" type="number" min="0" step="0.01" />
-              <FieldError :errors="errors.price" />
-            </div>
+            <InputField id="price" label="Ár" v-model="priceInput" type="number" min="0" step="0.01" :errors="errors.price" />
 
             <div class="space-y-2">
               <Label for="color">Szín</Label>
