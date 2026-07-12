@@ -64,7 +64,6 @@ const handleSubmit = async () => {
             <InputField id="code" label="Kód" v-model="formData.code" :required="true" :errors="errors.code" />
 
             <div class="space-y-2">
-              <Label>Fordítások</Label>
               <TranslationRepeater
                 :model-value="formData.translations as any"
                 :fields="['name', 'description']"

@@ -114,7 +114,6 @@ onMounted(() => {
             <InputField id="code" label="Kód" v-model="formData.code" :required="true" :errors="errors.code" />
 
             <div class="space-y-2">
-              <div class="text-sm font-medium leading-none">Fordítások</div>
               <TranslationRepeater
                 :model-value="formData.translations as any"
                 :fields="['name', 'description']"
