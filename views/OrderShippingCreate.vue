@@ -87,24 +87,23 @@ const handleSubmit = async () => {
             <div class="space-y-2">
               <TranslationRepeater
                 :model-value="formData.translations as any"
+                #default="{ language, translation }"
                 :fields="['name', 'description']"
                 @update:model-value="(value: any) => formData.translations = value"
               >
-                <template #default="{ language, translation }">
-                  <div class="space-y-4">
-                    <div class="space-y-2">
-                      <Label :for="`translation-name-${language.id}`">Név *</Label>
-                      <Input :id="`translation-name-${language.id}`" v-model="translation.name" />
-                      <FieldError :errors="errors[`translations.${language.id}.name`]" />
-                    </div>
-
-                    <div class="space-y-2">
-                      <Label :for="`translation-description-${language.id}`">Leírás</Label>
-                      <Textarea :id="`translation-description-${language.id}`" v-model="translation.description" rows="3" />
-                      <FieldError :errors="errors[`translations.${language.id}.description`]" />
-                    </div>
+                <div class="space-y-4">
+                  <div class="space-y-2">
+                    <Label :for="`translation-name-${language.id}`">Név *</Label>
+                    <Input :id="`translation-name-${language.id}`" v-model="translation.name" />
+                    <FieldError :errors="errors[`translations.${language.id}.name`]" />
                   </div>
-                </template>
+
+                  <div class="space-y-2">
+                    <Label :for="`translation-description-${language.id}`">Leírás</Label>
+                    <Textarea :id="`translation-description-${language.id}`" v-model="translation.description" rows="3" />
+                    <FieldError :errors="errors[`translations.${language.id}.description`]" />
+                  </div>
+                </div>
               </TranslationRepeater>
               <FieldError :errors="errors.translations" />
             </div>
