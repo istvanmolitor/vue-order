@@ -74,14 +74,12 @@ const fetchOrders = async (params: {
 const handleDelete = async (id: number | undefined) => {
   if (!id) return
 
-  if (confirm('Biztosan törölni szeretné ezt a rendelést?')) {
-    try {
-      await orderService.delete(id)
-      toastService.success('Rendelés sikeresen törölve')
-      await fetchOrders({ page: Number(pagination.value.current_page) || 1 })
-    } catch (err: any) {
-      toastService.error(err.message || 'Hiba történt a törlés során')
-    }
+  try {
+    await orderService.delete(id)
+    toastService.success('Rendelés sikeresen törölve')
+    await fetchOrders({ page: Number(pagination.value.current_page) || 1 })
+  } catch (err: any) {
+    toastService.error(err.message || 'Hiba történt a törlés során')
   }
 }
 
@@ -134,7 +132,7 @@ onMounted(() => {
               <div class="flex gap-2">
                 <ShowButton @click="router.push({ name: 'order.show', params: { id: row.id } })" />
                 <EditButton @click="navigateToEdit(row.id)" />
-                <DeleteButton @click="handleDelete(row.id)" />
+                <DeleteButton @confirm="handleDelete(row.id)" />
               </div>
             </template>
           </DataTable>

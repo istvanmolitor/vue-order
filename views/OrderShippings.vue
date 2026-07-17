@@ -66,14 +66,12 @@ const handleDelete = async (id: number | undefined) => {
     return
   }
 
-  if (confirm('Biztosan törölni szeretnéd ezt a szállítási módot?')) {
-    try {
-      await orderShippingService.delete(id)
-      toastService.success('Szállítási mód sikeresen törölve')
-      await fetchOrderShippings({ page: pagination.value.current_page })
-    } catch (err: any) {
-      toastService.error(err.message || 'Hiba történt a törlés során')
-    }
+  try {
+    await orderShippingService.delete(id)
+    toastService.success('Szállítási mód sikeresen törölve')
+    await fetchOrderShippings({ page: pagination.value.current_page })
+  } catch (err: any) {
+    toastService.error(err.message || 'Hiba történt a törlés során')
   }
 }
 
@@ -127,7 +125,7 @@ onMounted(() => {
             <template #row-actions="{ row }">
               <div class="flex items-center gap-2">
                 <EditButton @click="router.push({ name: 'order-shipping.edit', params: { id: row.id } })" />
-                <DeleteButton @click="handleDelete(row.id)" />
+                <DeleteButton @confirm="handleDelete(row.id)" />
               </div>
             </template>
             <template #empty>

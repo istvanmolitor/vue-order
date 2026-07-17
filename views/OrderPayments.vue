@@ -66,14 +66,12 @@ const handleDelete = async (id: number | undefined) => {
     return
   }
 
-  if (confirm('Biztosan törölni szeretnéd ezt a fizetési módot?')) {
-    try {
-      await orderPaymentService.delete(id)
-      toastService.success('Fizetési mód sikeresen törölve')
-      await fetchOrderPayments({ page: pagination.value.current_page })
-    } catch (err: any) {
-      toastService.error(err.message || 'Hiba történt a törlés során')
-    }
+  try {
+    await orderPaymentService.delete(id)
+    toastService.success('Fizetési mód sikeresen törölve')
+    await fetchOrderPayments({ page: pagination.value.current_page })
+  } catch (err: any) {
+    toastService.error(err.message || 'Hiba történt a törlés során')
   }
 }
 
@@ -124,7 +122,7 @@ onMounted(() => {
             <template #row-actions="{ row }">
               <div class="flex items-center gap-2">
                 <EditButton @click="router.push({ name: 'order-payment.edit', params: { id: row.id } })" />
-                <DeleteButton @click="handleDelete(row.id)" />
+                <DeleteButton @confirm="handleDelete(row.id)" />
               </div>
             </template>
             <template #empty>

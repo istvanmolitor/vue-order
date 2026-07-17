@@ -73,14 +73,12 @@ const handleDelete = async (id: number | undefined) => {
     return
   }
 
-  if (confirm('Biztosan törölni szeretnéd ezt a státuszt?')) {
-    try {
-      await orderStatusService.delete(id)
-      toastService.success('Státusz sikeresen törölve')
-      await fetchOrderStatuses({ page: pagination.value.current_page })
-    } catch (err: any) {
-      toastService.error(err.message || 'Hiba történt a törlés során')
-    }
+  try {
+    await orderStatusService.delete(id)
+    toastService.success('Státusz sikeresen törölve')
+    await fetchOrderStatuses({ page: pagination.value.current_page })
+  } catch (err: any) {
+    toastService.error(err.message || 'Hiba történt a törlés során')
   }
 }
 
@@ -132,7 +130,7 @@ onMounted(() => {
             <template #row-actions="{ row }">
               <div class="flex items-center gap-2">
                 <EditButton @click="router.push({ name: 'order-status.edit', params: { id: row.id } })" />
-                <DeleteButton @click="handleDelete(row.id)" />
+                <DeleteButton @confirm="handleDelete(row.id)" />
               </div>
             </template>
             <template #empty>

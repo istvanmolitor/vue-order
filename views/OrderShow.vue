@@ -38,14 +38,12 @@ const fetchOrder = async () => {
 const handleDelete = async () => {
   if (!order.value?.id) return
 
-  if (confirm('Biztosan törölni szeretné ezt a rendelést?')) {
-    try {
-      await orderService.delete(order.value.id)
-      toastService.success('Rendelés sikeresen törölve')
-      router.push({ name: 'order.index' })
-    } catch (err: any) {
-      toastService.error(err.message || 'Hiba történt a törlés során')
-    }
+  try {
+    await orderService.delete(order.value.id)
+    toastService.success('Rendelés sikeresen törölve')
+    router.push({ name: 'order.index' })
+  } catch (err: any) {
+    toastService.error(err.message || 'Hiba történt a törlés során')
   }
 }
 
@@ -70,7 +68,7 @@ onMounted(() => {
         </div>
         <div class="flex gap-2" v-if="order">
           <EditButton @click="navigateToEdit" />
-          <DeleteButton @click="handleDelete" />
+          <DeleteButton @confirm="handleDelete" />
         </div>
       </div>
 
