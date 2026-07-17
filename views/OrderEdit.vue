@@ -85,12 +85,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <AdminLayout>
+  <AdminLayout page-title="Rendelés szerkesztése">
     <div class="space-y-6">
-      <div class="flex items-center justify-between">
-        <h1 class="text-3xl font-bold tracking-tight">Rendelés szerkesztése</h1>
-      </div>
-
       <div v-if="fetching" class="text-center py-8">
         <p class="text-muted-foreground"><LoadingSpinner label="Betöltés..." /></p>
       </div>

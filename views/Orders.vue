@@ -101,10 +101,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <AdminLayout>
+  <AdminLayout page-title="Rendelések">
     <div class="space-y-6">
-      <div class="flex items-center justify-between">
-        <h1 class="text-3xl font-bold tracking-tight">Rendelések</h1>
+      <div class="flex items-center justify-end">
         <Button @click="navigateToCreate" class="gap-2">
           <Plus class="w-4 h-4" />
           Új rendelés
