@@ -98,64 +98,73 @@ onMounted(() => {
 <template>
   <AdminLayout page-title="Fizetési mód szerkesztése">
     <div class="space-y-6">
-      <h1 class="text-3xl font-bold tracking-tight">Fizetési mód szerkesztése</h1>
       <div v-if="fetching" class="py-8 text-center text-muted-foreground"><LoadingSpinner label="Betöltés..." /></div>
-      <Card v-else>
-        <CardHeader>
-          <CardTitle>Fizetési mód adatai</CardTitle>
-          <CardDescription>Módosítsa a fizetési mód adatait</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form class="space-y-6" @submit.prevent="handleSubmit">
-            <InputField id="code" label="Kód" v-model="formData.code" :required="true" :errors="errors.code" />
+      <form v-else class="space-y-6" @submit.prevent="handleSubmit">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Fizetési mód adatai</CardTitle>
+              <CardDescription>Módosítsa a fizetési mód adatait</CardDescription>
+            </CardHeader>
+            <CardContent class="space-y-6">
+              <InputField id="code" label="Kód" v-model="formData.code" :required="true" :errors="errors.code" />
 
-            <div class="space-y-2">
-              <TranslationRepeater
-                :model-value="formData.translations as any"
-                #default="{ language, translation }"
-                :fields="['name', 'description']"
-                @update:model-value="(value: any) => formData.translations = value"
-              >
-                <div class="space-y-4">
-                  <InputField :id="`translation-name-${language.id}`" label="Név" v-model="translation.name" :required="true" :errors="errors[`translations.${language.id}.name`]" />
+              <InputField id="price" label="Ár" v-model="priceInput" type="number" min="0" step="0.01" :errors="errors.price" />
 
-                  <div class="space-y-2">
-                    <Label :for="`translation-description-${language.id}`">Leírás</Label>
-                    <Textarea :id="`translation-description-${language.id}`" v-model="translation.description" rows="3" />
-                    <FieldError :errors="errors[`translations.${language.id}.description`]" />
+              <div class="space-y-2">
+                <Label for="color">Szín</Label>
+                <ColorPicker id="color" v-model="formData.color" placeholder="#3b82f6" />
+                <FieldError :errors="errors.color" />
+              </div>
+
+              <Checkboxes
+                v-model="formData.shipping_ids"
+                :items="availableShippings"
+                label="Szállítási módok"
+                empty-message="Nincsenek elérhető szállítási módok."
+                id-prefix="shipping"
+              />
+              <FieldError :errors="errors.shipping_ids" />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Fordítások</CardTitle>
+              <CardDescription>Nyelvenkénti elnevezés és leírás</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div class="space-y-2">
+                <TranslationRepeater
+                  :model-value="formData.translations as any"
+                  #default="{ language, translation }"
+                  :fields="['name', 'description']"
+                  @update:model-value="(value: any) => formData.translations = value"
+                >
+                  <div class="space-y-4">
+                    <InputField :id="`translation-name-${language.id}`" label="Név" v-model="translation.name" :required="true" :errors="errors[`translations.${language.id}.name`]" />
+
+                    <div class="space-y-2">
+                      <Label :for="`translation-description-${language.id}`">Leírás</Label>
+                      <Textarea :id="`translation-description-${language.id}`" v-model="translation.description" rows="3" />
+                      <FieldError :errors="errors[`translations.${language.id}.description`]" />
+                    </div>
                   </div>
-                </div>
-              </TranslationRepeater>
-              <FieldError :errors="errors.translations" />
-            </div>
+                </TranslationRepeater>
+                <FieldError :errors="errors.translations" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-            <InputField id="price" label="Ár" v-model="priceInput" type="number" min="0" step="0.01" :errors="errors.price" />
-
-            <div class="space-y-2">
-              <Label for="color">Szín</Label>
-              <ColorPicker id="color" v-model="formData.color" placeholder="#3b82f6" />
-              <FieldError :errors="errors.color" />
-            </div>
-
-            <Checkboxes
-              v-model="formData.shipping_ids"
-              :items="availableShippings"
-              label="Szállítási módok"
-              empty-message="Nincsenek elérhető szállítási módok."
-              id-prefix="shipping"
-            />
-            <FieldError :errors="errors.shipping_ids" />
-
-            <FormButtons
-              :loading="loading"
-              cancel-text="Vissza"
-              submit-text="Mentés"
-              @cancel="router.push({ name: 'order-payment.index' })"
-              @submit="handleSubmit"
-            />
-          </form>
-        </CardContent>
-      </Card>
+        <FormButtons
+          :loading="loading"
+          cancel-text="Vissza"
+          submit-text="Mentés"
+          @cancel="router.push({ name: 'order-payment.index' })"
+          @submit="handleSubmit"
+        />
+      </form>
     </div>
   </AdminLayout>
 </template>
