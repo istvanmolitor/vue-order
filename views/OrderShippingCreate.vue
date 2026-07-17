@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@admin/components/layout/AdminLayout.vue'
 import Card from '@admin/components/ui/Card.vue'
@@ -13,21 +13,24 @@ import FieldError from '@admin/components/ui/FieldError.vue'
 import InputField from '@admin/components/ui/InputField.vue'
 import Label from '@admin/components/ui/Label.vue'
 import Textarea from '@admin/components/ui/Textarea.vue'
+import Checkboxes from '@admin/components/ui/Checkboxes.vue'
 import TranslationRepeaterVue from '@language/components/TranslationRepeater.vue'
 import { toastService } from '@admin/lib/toastService'
-import { orderShippingService, type OrderShippingFormData } from '../index'
+import { orderShippingService, type OrderShippingFormData, type OrderPaymentSimple } from '../index'
 
 const TranslationRepeater = TranslationRepeaterVue as any
 
 const router = useRouter()
 const loading = ref(false)
 const errors = ref<Record<string, string | string[]>>({})
+const availablePayments = ref<OrderPaymentSimple[]>([])
 const formData = ref<OrderShippingFormData>({
   code: '',
   translations: {},
   type: '',
   color: '',
   price: undefined,
+  payment_ids: [],
 })
 
 const typeInput = computed<string | number | undefined>({
@@ -67,6 +70,15 @@ const handleSubmit = async () => {
     loading.value = false
   }
 }
+
+onMounted(async () => {
+  try {
+    const response = await orderShippingService.getCreateData()
+    availablePayments.value = response.data.payments || []
+  } catch (err: any) {
+    toastService.error(err.message || 'Hiba történt az adatok betöltése során')
+  }
+})
 </script>
 
 <template>
@@ -112,6 +124,15 @@ const handleSubmit = async () => {
               <ColorPicker id="color" v-model="formData.color" placeholder="#f59e0b" />
               <FieldError :errors="errors.color" />
             </div>
+
+            <Checkboxes
+              v-model="formData.payment_ids"
+              :items="availablePayments"
+              label="Fizetési módok"
+              empty-message="Nincsenek elérhető fizetési módok."
+              id-prefix="payment"
+            />
+            <FieldError :errors="errors.payment_ids" />
 
             <FormButtons
               :loading="loading"

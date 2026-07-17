@@ -13,8 +13,8 @@ export type {
   SingleResponse
 } from './services/orderService'
 export type { OrderStatusItem, OrderStatusFormData } from './services/orderStatusService'
-export type { OrderPayment, OrderPaymentFormData } from './services/orderPaymentService'
-export type { OrderShipping, OrderShippingFormData } from './services/orderShippingService'
+export type { OrderPayment, OrderPaymentFormData, OrderShippingSimple } from './services/orderPaymentService'
+export type { OrderShipping, OrderShippingFormData, OrderPaymentSimple } from './services/orderShippingService'
 
 // Router
 export { default as router } from './router/index'

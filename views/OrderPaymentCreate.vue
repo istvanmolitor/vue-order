@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '@admin/components/layout/AdminLayout.vue'
 import Card from '@admin/components/ui/Card.vue'
@@ -13,20 +13,23 @@ import FieldError from '@admin/components/ui/FieldError.vue'
 import InputField from '@admin/components/ui/InputField.vue'
 import Label from '@admin/components/ui/Label.vue'
 import Textarea from '@admin/components/ui/Textarea.vue'
+import Checkboxes from '@admin/components/ui/Checkboxes.vue'
 import TranslationRepeaterVue from '@language/components/TranslationRepeater.vue'
 import { toastService } from '@admin/lib/toastService'
-import { orderPaymentService, type OrderPaymentFormData } from '../index'
+import { orderPaymentService, type OrderPaymentFormData, type OrderShippingSimple } from '../index'
 
 const TranslationRepeater = TranslationRepeaterVue as any
 
 const router = useRouter()
 const loading = ref(false)
 const errors = ref<Record<string, string | string[]>>({})
+const availableShippings = ref<OrderShippingSimple[]>([])
 const formData = ref<OrderPaymentFormData>({
   code: '',
   translations: {},
   color: '',
   price: undefined,
+  shipping_ids: [],
 })
 
 const priceInput = computed<string | number | undefined>({
@@ -59,6 +62,15 @@ const handleSubmit = async () => {
     loading.value = false
   }
 }
+
+onMounted(async () => {
+  try {
+    const response = await orderPaymentService.getCreateData()
+    availableShippings.value = response.data.shippings || []
+  } catch (err: any) {
+    toastService.error(err.message || 'Hiba történt az adatok betöltése során')
+  }
+})
 </script>
 
 <template>
@@ -102,6 +114,15 @@ const handleSubmit = async () => {
               <ColorPicker id="color" v-model="formData.color" placeholder="#3b82f6" />
               <FieldError :errors="errors.color" />
             </div>
+
+            <Checkboxes
+              v-model="formData.shipping_ids"
+              :items="availableShippings"
+              label="Szállítási módok"
+              empty-message="Nincsenek elérhető szállítási módok."
+              id-prefix="shipping"
+            />
+            <FieldError :errors="errors.shipping_ids" />
 
             <FormButtons
               :loading="loading"

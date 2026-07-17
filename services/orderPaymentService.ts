@@ -12,6 +12,12 @@ export interface OrderPayment {
   price?: number | null
   created_at?: string
   updated_at?: string
+  shippings?: OrderShippingSimple[]
+}
+
+export interface OrderShippingSimple {
+  id: number
+  name: string
 }
 
 export interface OrderPaymentTranslation {
@@ -24,6 +30,7 @@ export interface OrderPaymentFormData {
   translations: Record<number, OrderPaymentTranslation>
   color?: string
   price?: number
+  shipping_ids?: number[]
 }
 
 export interface PaginatedResponse<T> {
@@ -54,10 +61,10 @@ export const orderPaymentService = {
     return api.get<SingleResponse<OrderPayment>>(`/api/admin/order/order-payments/${id}`)
   },
   getCreateData() {
-    return api.get('/api/admin/order/order-payments/create')
+    return api.get<{ shippings: OrderShippingSimple[] }>('/api/admin/order/order-payments/create')
   },
   getEditData(id: number | string) {
-    return api.get<{ data: OrderPayment }>(`/api/admin/order/order-payments/${id}/edit`)
+    return api.get<{ data: OrderPayment; shippings: OrderShippingSimple[] }>(`/api/admin/order/order-payments/${id}/edit`)
   },
   create(orderPayment: OrderPaymentFormData) {
     return api.post<OrderPayment>('/api/admin/order/order-payments', orderPayment)

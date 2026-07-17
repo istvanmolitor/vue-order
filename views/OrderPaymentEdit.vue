@@ -13,11 +13,12 @@ import FieldError from '@admin/components/ui/FieldError.vue'
 import InputField from '@admin/components/ui/InputField.vue'
 import Label from '@admin/components/ui/Label.vue'
 import Textarea from '@admin/components/ui/Textarea.vue'
+import Checkboxes from '@admin/components/ui/Checkboxes.vue'
 import { normalizeTranslations } from '@language'
 import TranslationRepeaterVue from '@language/components/TranslationRepeater.vue'
 import { toastService } from '@admin/lib/toastService'
 import LoadingSpinner from '@admin/components/ui/LoadingSpinner.vue'
-import { orderPaymentService, type OrderPaymentFormData } from '../index'
+import { orderPaymentService, type OrderPaymentFormData, type OrderShippingSimple } from '../index'
 
 const TranslationRepeater = TranslationRepeaterVue as any
 
@@ -26,11 +27,13 @@ const route = useRoute()
 const loading = ref(false)
 const fetching = ref(true)
 const errors = ref<Record<string, string | string[]>>({})
+const availableShippings = ref<OrderShippingSimple[]>([])
 const formData = ref<OrderPaymentFormData>({
   code: '',
   translations: {},
   color: '',
   price: undefined,
+  shipping_ids: [],
 })
 
 const priceInput = computed<string | number | undefined>({
@@ -51,11 +54,14 @@ const fetchOrderPayment = async () => {
     const response = await orderPaymentService.getEditData(id)
     const orderPayment = response.data.data
 
+    availableShippings.value = response.data.shippings || []
+
     formData.value = {
       code: orderPayment.code,
       translations: normalizeTranslations(orderPayment.translations, ['name', 'description']) as OrderPaymentFormData['translations'],
       color: orderPayment.color || '',
       price: orderPayment.price ?? undefined,
+      shipping_ids: orderPayment.shippings?.map((s) => s.id) || [],
     }
   } catch (err: any) {
     toastService.error(err.message || 'Hiba történt a fizetési mód betöltése során')
@@ -130,6 +136,15 @@ onMounted(() => {
               <ColorPicker id="color" v-model="formData.color" placeholder="#3b82f6" />
               <FieldError :errors="errors.color" />
             </div>
+
+            <Checkboxes
+              v-model="formData.shipping_ids"
+              :items="availableShippings"
+              label="Szállítási módok"
+              empty-message="Nincsenek elérhető szállítási módok."
+              id-prefix="shipping"
+            />
+            <FieldError :errors="errors.shipping_ids" />
 
             <FormButtons
               :loading="loading"
